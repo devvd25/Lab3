@@ -1,0 +1,188 @@
+{
+	"info": {
+		"_postman_id": "student-api-collection",
+		"name": "Student API Collection",
+		"description": "Collection để test 6 API quản lý sinh viên",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. API lấy danh sách sinh viên",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/students",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"students"
+					]
+				},
+				"description": "Lấy toàn bộ danh sách sinh viên"
+			},
+			"response": []
+		},
+		{
+			"name": "2. API thêm sinh viên",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "name",
+							"value": "Phạm Văn E",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "e@gmail.com",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/students",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"students"
+					]
+				},
+				"description": "Thêm sinh viên mới vào database"
+			},
+			"response": []
+		},
+		{
+			"name": "3. API lấy sinh viên theo ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/students/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"students",
+						"1"
+					]
+				},
+				"description": "Lấy thông tin sinh viên có ID = 1"
+			},
+			"response": []
+		},
+		{
+			"name": "4. API tìm kiếm sinh viên theo tên",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/students/search?name=Nguyễn",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"students",
+						"search"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "Nguyễn"
+						}
+					]
+				},
+				"description": "Tìm kiếm sinh viên có tên chứa từ khóa (không phân biệt hoa thường)"
+			},
+			"response": []
+		},
+		{
+			"name": "5. API cập nhật sinh viên",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "name",
+							"value": "Nguyễn Văn A - Updated",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "a.updated@gmail.com",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/students/update/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"students",
+						"update",
+						"1"
+					]
+				},
+				"description": "Cập nhật thông tin sinh viên có ID = 1"
+			},
+			"response": []
+		},
+		{
+			"name": "6. API xóa sinh viên",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/students/delete/5",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"students",
+						"delete",
+						"5"
+					]
+				},
+				"description": "Xóa sinh viên có ID = 5"
+			},
+			"response": []
+		}
+	]
+}

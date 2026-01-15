@@ -11,17 +11,17 @@ import jakarta.persistence.Table;
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     private String name;
     private String email;
 
     public Student() {}
-    public Student(int id, String name, String email) {
+    public Student(Integer id, String name, String email) {
         this.id = id;
         this.name = name;
         this.email = email;
     }
-    public int getId() {
+    public Integer getId() {
         return id;
     }
     public String getName() {
@@ -30,7 +30,7 @@ public class Student {
     public String getEmail() {
         return email;
     }
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
     public void setName(String name) {

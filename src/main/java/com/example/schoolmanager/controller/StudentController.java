@@ -3,6 +3,7 @@ package com.example.schoolmanager.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +25,11 @@ public class StudentController {
 
     //1. API thêm sinh viên
     @PostMapping
-    public Student addStudent(Student student) {
+    public Student addStudent(@RequestParam String name, @RequestParam String email) {
+        Student student = new Student();
+        student.setName(name);
+        student.setEmail(email);
+        System.out.println("DEBUG - Creating student: name=" + name + ", email=" + email + ", id=" + student.getId());
         return service.addStudent(student);
     }
     //2. API xóa sinh viên

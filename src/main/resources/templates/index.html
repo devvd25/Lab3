@@ -10,8 +10,16 @@
 
 <h3>DANH SÁCH SINH VIÊN</h3>
 
-<input type="text" id="search" class="form-control mb-3"
-       placeholder="Tìm theo tên..." onkeyup="searchStudent()">
+<div class="row mb-3">
+    <div class="col-md-6">
+        <input type="text" id="searchName" class="form-control"
+               placeholder="Tìm theo tên..." onkeyup="searchStudent()">
+    </div>
+    <div class="col-md-6">
+        <input type="number" id="searchId" class="form-control"
+               placeholder="Tìm theo ID..." onkeyup="searchById()">
+    </div>
+</div>
 
 <table class="table table-bordered">
     <thead>
@@ -25,11 +33,13 @@
     <tbody id="studentTable"></tbody>
 </table>
 
-<h4>Thêm sinh viên</h4>
+<h4 id="formTitle">Thêm sinh viên</h4>
+<input type="hidden" id="studentId">
 <input id="name" class="form-control mb-2" placeholder="Tên">
 <input id="email" class="form-control mb-2" placeholder="Email">
 
-<button class="btn btn-primary" onclick="addStudent()">Thêm</button>
+<button id="submitBtn" class="btn btn-primary" onclick="saveStudent()">Thêm</button>
+<button id="cancelBtn" class="btn btn-secondary" onclick="cancelEdit()" style="display:none;">Hủy</button>
 
 <script>
 const API = "http://localhost:8080/api/students";
@@ -46,6 +56,8 @@ function loadStudents() {
                     <td>${s.name}</td>
                     <td>${s.email}</td>
                     <td>
+                        <button class="btn btn-warning btn-sm"
+                            onclick="editStudent(${s.id}, '${s.name}', '${s.email}')">Sửa</button>
                         <button class="btn btn-danger btn-sm"
                             onclick="deleteStudent(${s.id})">Xóa</button>
                     </td>
@@ -55,21 +67,48 @@ function loadStudents() {
         });
 }
 
-function addStudent() {
+function saveStudent() {
+    const id = document.getElementById("studentId").value;
     const student = {
         name: document.getElementById("name").value,
         email: document.getElementById("email").value
     };
 
-    fetch(API, {
-        method: "POST",
+    const url = id ? `${API}/update/${id}` : API;
+    const method = "POST";
+
+    fetch(url, {
+        method: method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(student)
     }).then(() => {
-        document.getElementById("name").value = "";
-        document.getElementById("email").value = "";
+        resetForm();
         loadStudents();
     });
+}
+
+function editStudent(id, name, email) {
+    document.getElementById("studentId").value = id;
+    document.getElementById("name").value = name;
+    document.getElementById("email").value = email;
+    document.getElementById("formTitle").textContent = "Cập nhật sinh viên";
+    document.getElementById("submitBtn").textContent = "Cập nhật";
+    document.getElementById("submitBtn").className = "btn btn-success";
+    document.getElementById("cancelBtn").style.display = "inline-block";
+}
+
+function cancelEdit() {
+    resetForm();
+}
+
+function resetForm() {
+    document.getElementById("studentId").value = "";
+    document.getElementById("name").value = "";
+    document.getElementById("email").value = "";
+    document.getElementById("formTitle").textContent = "Thêm sinh viên";
+    document.getElementById("submitBtn").textContent = "Thêm";
+    document.getElementById("submitBtn").className = "btn btn-primary";
+    document.getElementById("cancelBtn").style.display = "none";
 }
 
 function deleteStudent(id) {
@@ -78,22 +117,64 @@ function deleteStudent(id) {
 }
 
 function searchStudent() {
-    const name = document.getElementById("search").value;
+    const name = document.getElementById("searchName").value;
+    document.getElementById("searchId").value = ""; // Clear ID search
+    
+    if (!name) {
+        loadStudents();
+        return;
+    }
+    
     fetch(`${API}/search?name=${name}`)
         .then(res => res.json())
         .then(data => {
-            let html = "";
-            data.forEach(s => {
-                html += `
-                <tr>
-                    <td>${s.id}</td>
-                    <td>${s.name}</td>
-                    <td>${s.email}</td>
-                    <td></td>
-                </tr>`;
-            });
-            document.getElementById("studentTable").innerHTML = html;
+            displaySearchResults(data);
         });
+}
+
+function searchById() {
+    const id = document.getElementById("searchId").value;
+    document.getElementById("searchName").value = ""; // Clear name search
+    
+    if (!id) {
+        loadStudents();
+        return;
+    }
+    
+    fetch(`${API}/${id}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data && data.id) {
+                displaySearchResults([data]);
+            } else {
+                document.getElementById("studentTable").innerHTML = 
+                    '<tr><td colspan="4" class="text-center">Không tìm thấy sinh viên</td></tr>';
+            }
+        })
+        .catch(() => {
+            document.getElementById("studentTable").innerHTML = 
+                '<tr><td colspan="4" class="text-center">Không tìm thấy sinh viên</td></tr>';
+        });
+}
+
+function displaySearchResults(data) {
+    let html = "";
+    data.forEach(s => {
+        html += `
+        <tr>
+            <td>${s.id}</td>
+            <td>${s.name}</td>
+            <td>${s.email}</td>
+            <td>
+                <button class="btn btn-warning btn-sm"
+                    onclick="editStudent(${s.id}, '${s.name}', '${s.email}')">Sửa</button>
+                <button class="btn btn-danger btn-sm"
+                    onclick="deleteStudent(${s.id})">Xóa</button>
+            </td>
+        </tr>`;
+    });
+    document.getElementById("studentTable").innerHTML = html || 
+        '<tr><td colspan="4" class="text-center">Không tìm thấy kết quả</td></tr>';
 }
 
 loadStudents();

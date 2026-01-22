@@ -28,7 +28,7 @@ public class StudentController {
     //1. API thêm sinh viên
     @PostMapping
     public Student addStudent(@RequestBody Student student) {
-        System.out.println("DEBUG - Creating student: name=" + student.getName() + ", email=" + student.getEmail() + ", id=" + student.getId());
+        System.out.println("DEBUG - Creating student: name=" + student.getName() + ", email=" + student.getEmail());
         return service.addStudent(student);
     }
     //2. API xóa sinh viên
@@ -57,11 +57,11 @@ public class StudentController {
     
     //6. API cập nhật sinh viên
     @PostMapping("/update/{id}")
-    public Student updateStudent(@PathVariable int id, @RequestParam String name, @RequestParam String email) {
+    public Student updateStudent(@PathVariable int id, @RequestBody Student student) {
         Student existingStudent = service.getStudentById(id);
         if (existingStudent != null) {
-            existingStudent.setName(name);
-            existingStudent.setEmail(email);
+            existingStudent.setName(student.getName());
+            existingStudent.setEmail(student.getEmail());
             return service.addStudent(existingStudent);
         }
         return null;

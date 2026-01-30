@@ -61,6 +61,7 @@ public class StudentController {
         Student existingStudent = service.getStudentById(id);
         if (existingStudent != null) {
             existingStudent.setName(student.getName());
+            existingStudent.setAge(student.getAge());
             existingStudent.setEmail(student.getEmail());
             return service.addStudent(existingStudent);
         }

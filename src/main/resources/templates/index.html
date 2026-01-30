@@ -26,6 +26,7 @@
     <tr>
         <th>ID</th>
         <th>Tên</th>
+        <th>Tuổi</th>
         <th>Email</th>
         <th>Hành động</th>
     </tr>
@@ -36,6 +37,7 @@
 <h4 id="formTitle">Thêm sinh viên</h4>
 <input type="hidden" id="studentId">
 <input id="name" class="form-control mb-2" placeholder="Tên">
+<input id="age" type="number" class="form-control mb-2" placeholder="Tuổi">
 <input id="email" class="form-control mb-2" placeholder="Email">
 
 <button id="submitBtn" class="btn btn-primary" onclick="saveStudent()">Thêm</button>
@@ -54,10 +56,11 @@ function loadStudents() {
                 <tr>
                     <td>${s.id}</td>
                     <td>${s.name}</td>
+                    <td>${s.age}</td>
                     <td>${s.email}</td>
                     <td>
                         <button class="btn btn-warning btn-sm"
-                            onclick="editStudent(${s.id}, '${s.name}', '${s.email}')">Sửa</button>
+                            onclick="editStudent(${s.id}, '${s.name}', ${s.age}, '${s.email}')">Sửa</button>
                         <button class="btn btn-danger btn-sm"
                             onclick="deleteStudent(${s.id})">Xóa</button>
                     </td>
@@ -71,6 +74,7 @@ function saveStudent() {
     const id = document.getElementById("studentId").value;
     const student = {
         name: document.getElementById("name").value,
+        age: parseInt(document.getElementById("age").value),
         email: document.getElementById("email").value
     };
 
@@ -87,9 +91,10 @@ function saveStudent() {
     });
 }
 
-function editStudent(id, name, email) {
+function editStudent(id, name, age, email) {
     document.getElementById("studentId").value = id;
     document.getElementById("name").value = name;
+    document.getElementById("age").value = age;
     document.getElementById("email").value = email;
     document.getElementById("formTitle").textContent = "Cập nhật sinh viên";
     document.getElementById("submitBtn").textContent = "Cập nhật";
@@ -104,6 +109,7 @@ function cancelEdit() {
 function resetForm() {
     document.getElementById("studentId").value = "";
     document.getElementById("name").value = "";
+    document.getElementById("age").value = "";
     document.getElementById("email").value = "";
     document.getElementById("formTitle").textContent = "Thêm sinh viên";
     document.getElementById("submitBtn").textContent = "Thêm";

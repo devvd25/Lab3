@@ -268,17 +268,6 @@
             font-weight: 600;
         }
 
-        .avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 12px;
-            background: #fff1e8;
-            color: var(--accent);
-            display: grid;
-            place-items: center;
-            font-weight: 700;
-        }
-
         .age-pill {
             display: inline-flex;
             align-items: center;
@@ -565,11 +554,6 @@ function normalizeText(value) {
         .toLowerCase();
 }
 
-function getInitials(name) {
-    if (!name) return "U";
-    return name.split(" ").map(part => part[0]).join("").substring(0, 2).toUpperCase();
-}
-
 function getRowNumber(idValue, fallbackIndex) {
     const match = currentStudents.find(s => s.id === idValue);
     return match && match.__rowNumber ? match.__rowNumber : fallbackIndex + 1;
@@ -609,14 +593,12 @@ function renderTable(data) {
             const safeEmail = (s.email ?? "").replace(/\\/g, "\\\\").replace(/'/g, "\\'");
             const ageValue = s.age ?? "";
             const rowNumber = getRowNumber(idValue, index);
-            const initials = getInitials(s.name);
 
             html += `
             <tr>
                 <td><span class="id-pill" title="${idValue}">${rowNumber}</span></td>
                 <td>
                     <div class="name-cell">
-                        <div class="avatar">${initials}</div>
                         <span>${s.name}</span>
                     </div>
                 </td>

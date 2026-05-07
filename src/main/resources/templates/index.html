@@ -567,7 +567,25 @@ function loadStudents() {
     fetch(API)
         .then(res => res.json())
         .then(data => {
-            currentStudents = data.map((s, index) => ({
+            const sorted = (data || []).slice().sort((a, b) => {
+                const nameA = normalizeText(a.name);
+                const nameB = normalizeText(b.name);
+                if (nameA < nameB) return -1;
+                if (nameA > nameB) return 1;
+
+                const emailA = (a.email ?? "").toLowerCase();
+                const emailB = (b.email ?? "").toLowerCase();
+                if (emailA < emailB) return -1;
+                if (emailA > emailB) return 1;
+
+                const idA = (a.id ?? "").toLowerCase();
+                const idB = (b.id ?? "").toLowerCase();
+                if (idA < idB) return -1;
+                if (idA > idB) return 1;
+                return 0;
+            });
+
+            currentStudents = sorted.map((s, index) => ({
                 ...s,
                 __rowNumber: index + 1
             }));

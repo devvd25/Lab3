@@ -143,7 +143,7 @@
                     <div class="input-group">
                         <span class="input-group-text bg-white border-0"><i class="fas fa-hashtag"></i></span>
                            <input type="text" id="searchId" class="form-control border-start-0"
-                               placeholder="🔍 Tìm theo ID (UUID)..." onkeyup="searchById()">
+                               placeholder="🔍 Tìm theo STT..." onkeyup="searchById()">
                     </div>
                 </div>
             </div>
@@ -188,18 +188,28 @@
 
 <script>
 const API = "/api/students";
+let currentStudents = [];
+
+function getRowNumber(idValue, fallbackIndex) {
+    const match = currentStudents.find(s => s.id === idValue);
+    return match && match.__rowNumber ? match.__rowNumber : fallbackIndex + 1;
+}
 
 function loadStudents() {
     fetch(API)
         .then(res => res.json())
         .then(data => {
+            currentStudents = data.map((s, index) => ({
+                ...s,
+                __rowNumber: index + 1
+            }));
             let html = "";
-            data.forEach((s, index) => {
+            currentStudents.forEach((s, index) => {
                 const idValue = s.id ?? "";
                 const safeName = (s.name ?? "").replace(/\\/g, "\\\\").replace(/'/g, "\\'");
                 const safeEmail = (s.email ?? "").replace(/\\/g, "\\\\").replace(/'/g, "\\'");
                 const ageValue = s.age ?? "";
-                const rowNumber = index + 1;
+                const rowNumber = getRowNumber(idValue, index);
                 html += `
                 <tr>
                     <td><span class="badge-id" title="${idValue}">${rowNumber}</span></td>
@@ -311,28 +321,28 @@ function searchStudent() {
 }
 
 function searchById() {
-    const id = document.getElementById("searchId").value;
+    const id = document.getElementById("searchId").value.trim();
     document.getElementById("searchName").value = ""; // Clear name search
     
     if (!id) {
         loadStudents();
         return;
     }
-    
-    fetch(`${API}/${encodeURIComponent(id)}`)
-        .then(res => res.json())
-        .then(data => {
-            if (data && data.id) {
-                displaySearchResults([data]);
-            } else {
-                document.getElementById("studentTable").innerHTML = 
-                    '<tr><td colspan="5" class="text-center text-muted"><i class="fas fa-search"></i> Không tìm thấy sinh viên</td></tr>';
-            }
-        })
-        .catch(() => {
-            document.getElementById("studentTable").innerHTML = 
-                '<tr><td colspan="5" class="text-center text-muted"><i class="fas fa-exclamation-circle"></i> Không tìm thấy sinh viên</td></tr>';
-        });
+
+    const index = parseInt(id, 10);
+    if (Number.isNaN(index) || index < 1) {
+        document.getElementById("studentTable").innerHTML =
+            '<tr><td colspan="5" class="text-center text-muted"><i class="fas fa-exclamation-circle"></i> Vui lòng nhập STT hợp lệ</td></tr>';
+        return;
+    }
+
+    const match = currentStudents.find(s => s.__rowNumber === index);
+    if (match) {
+        displaySearchResults([match]);
+    } else {
+        document.getElementById("studentTable").innerHTML =
+            '<tr><td colspan="5" class="text-center text-muted"><i class="fas fa-search"></i> Không tìm thấy sinh viên</td></tr>';
+    }
 }
 
 function displaySearchResults(data) {
@@ -342,7 +352,7 @@ function displaySearchResults(data) {
         const safeName = (s.name ?? "").replace(/\\/g, "\\\\").replace(/'/g, "\\'");
         const safeEmail = (s.email ?? "").replace(/\\/g, "\\\\").replace(/'/g, "\\'");
         const ageValue = s.age ?? "";
-        const rowNumber = index + 1;
+        const rowNumber = getRowNumber(idValue, index);
         html += `
         <tr>
             <td><span class="badge-id" title="${idValue}">${rowNumber}</span></td>

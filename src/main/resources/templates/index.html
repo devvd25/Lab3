@@ -142,8 +142,8 @@
                 <div class="col-md-6">
                     <div class="input-group">
                         <span class="input-group-text bg-white border-0"><i class="fas fa-hashtag"></i></span>
-                        <input type="number" id="searchId" class="form-control border-start-0"
-                               placeholder="🔍 Tìm theo ID..." onkeyup="searchById()">
+                           <input type="text" id="searchId" class="form-control border-start-0"
+                               placeholder="🔍 Tìm theo ID (UUID)..." onkeyup="searchById()">
                     </div>
                 </div>
             </div>
@@ -187,7 +187,7 @@
 </div>
 
 <script>
-const API = "https://lab3-production-1572.up.railway.app/api/students";
+const API = "/api/students";
 
 function loadStudents() {
     fetch(API)
@@ -195,19 +195,23 @@ function loadStudents() {
         .then(data => {
             let html = "";
             data.forEach(s => {
+                const idValue = s.id ?? "";
+                const safeName = (s.name ?? "").replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+                const safeEmail = (s.email ?? "").replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+                const ageValue = s.age ?? "";
                 html += `
                 <tr>
-                    <td><span class="badge-id">${s.id}</span></td>
+                    <td><span class="badge-id">${idValue}</span></td>
                     <td><strong>${s.name}</strong></td>
                     <td><i class="fas fa-user-clock text-primary"></i> ${s.age || 'N/A'}</td>
                     <td><i class="fas fa-envelope text-info"></i> ${s.email}</td>
                     <td class="text-center">
                         <button class="btn btn-warning btn-sm btn-action" title="Sửa"
-                            onclick="editStudent(${s.id}, '${s.name}', ${s.age}, '${s.email}')">
+                            onclick="editStudent('${idValue}', '${safeName}', '${ageValue}', '${safeEmail}')">
                             <i class="fas fa-edit"></i>
                         </button>
                         <button class="btn btn-danger btn-sm btn-action" title="Xóa"
-                            onclick="deleteStudent(${s.id})">
+                            onclick="deleteStudent('${idValue}')">
                             <i class="fas fa-trash-alt"></i>
                         </button>
                     </td>
@@ -220,13 +224,14 @@ function loadStudents() {
 
 function saveStudent() {
     const id = document.getElementById("studentId").value;
+    const ageValue = document.getElementById("age").value.trim();
     const student = {
-        name: document.getElementById("name").value,
-        age: parseInt(document.getElementById("age").value),
-        email: document.getElementById("email").value
+        name: document.getElementById("name").value.trim(),
+        age: ageValue ? parseInt(ageValue, 10) : null,
+        email: document.getElementById("email").value.trim()
     };
 
-    const url = id ? `${API}/update/${id}` : API;
+    const url = id ? `${API}/update/${encodeURIComponent(id)}` : API;
     const method = "POST";
 
     fetch(url, {
@@ -242,7 +247,7 @@ function saveStudent() {
 function editStudent(id, name, age, email) {
     document.getElementById("studentId").value = id;
     document.getElementById("name").value = name;
-    document.getElementById("age").value = age;
+    document.getElementById("age").value = age ?? "";
     document.getElementById("email").value = email;
     document.getElementById("formTitle").innerHTML = '<i class="fas fa-user-edit"></i> Cập nhật sinh viên';
     document.getElementById("submitBtn").innerHTML = '<i class="fas fa-save"></i> Cập nhật';
@@ -270,7 +275,7 @@ function resetForm() {
 
 function deleteStudent(id) {
     if (confirm('Bạn có chắc muốn xóa sinh viên này?')) {
-        fetch(`${API}/${id}`, { method: "DELETE" })
+        fetch(`${API}/${encodeURIComponent(id)}`, { method: "DELETE" })
             .then(() => {
                 loadStudents();
                 showNotification('Đã xóa sinh viên thành công!', 'success');
@@ -297,7 +302,7 @@ function searchStudent() {
         return;
     }
     
-    fetch(`${API}/search?name=${name}`)
+    fetch(`${API}/search?name=${encodeURIComponent(name)}`)
         .then(res => res.json())
         .then(data => {
             displaySearchResults(data);
@@ -313,7 +318,7 @@ function searchById() {
         return;
     }
     
-    fetch(`${API}/${id}`)
+    fetch(`${API}/${encodeURIComponent(id)}`)
         .then(res => res.json())
         .then(data => {
             if (data && data.id) {
@@ -332,19 +337,23 @@ function searchById() {
 function displaySearchResults(data) {
     let html = "";
     data.forEach(s => {
+        const idValue = s.id ?? "";
+        const safeName = (s.name ?? "").replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+        const safeEmail = (s.email ?? "").replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+        const ageValue = s.age ?? "";
         html += `
         <tr>
-            <td><span class="badge-id">${s.id}</span></td>
+            <td><span class="badge-id">${idValue}</span></td>
             <td><strong>${s.name}</strong></td>
             <td><i class="fas fa-user-clock text-primary"></i> ${s.age || 'N/A'}</td>
             <td><i class="fas fa-envelope text-info"></i> ${s.email}</td>
             <td class="text-center">
                 <button class="btn btn-warning btn-sm btn-action" title="Sửa"
-                    onclick="editStudent(${s.id}, '${s.name}', ${s.age}, '${s.email}')">
+                    onclick="editStudent('${idValue}', '${safeName}', '${ageValue}', '${safeEmail}')">
                     <i class="fas fa-edit"></i>
                 </button>
                 <button class="btn btn-danger btn-sm btn-action" title="Xóa"
-                    onclick="deleteStudent(${s.id})">
+                    onclick="deleteStudent('${idValue}')">
                     <i class="fas fa-trash-alt"></i>
                 </button>
             </td>

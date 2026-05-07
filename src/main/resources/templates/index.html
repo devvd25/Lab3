@@ -189,6 +189,7 @@
 <script>
 const API = "/api/students";
 let currentStudents = [];
+let searchTimer = null;
 
 function getRowNumber(idValue, fallbackIndex) {
     const match = currentStudents.find(s => s.id === idValue);
@@ -305,19 +306,27 @@ function showNotification(message, type) {
 }
 
 function searchStudent() {
-    const name = document.getElementById("searchName").value;
-    document.getElementById("searchId").value = ""; // Clear ID search
-    
-    if (!name) {
-        loadStudents();
-        return;
+    const nameInput = document.getElementById("searchName");
+    const idInput = document.getElementById("searchId");
+    const name = nameInput.value.trim();
+    idInput.value = ""; // Clear ID search
+
+    if (searchTimer) {
+        clearTimeout(searchTimer);
     }
-    
-    fetch(`${API}/search?name=${encodeURIComponent(name)}`)
-        .then(res => res.json())
-        .then(data => {
-            displaySearchResults(data);
-        });
+
+    searchTimer = setTimeout(() => {
+        if (!name) {
+            displaySearchResults(currentStudents);
+            return;
+        }
+
+        const normalized = name.toLowerCase();
+        const filtered = currentStudents.filter(s =>
+            (s.name ?? "").toLowerCase().includes(normalized)
+        );
+        displaySearchResults(filtered);
+    }, 200);
 }
 
 function searchById() {

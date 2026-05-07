@@ -191,6 +191,15 @@ const API = "/api/students";
 let currentStudents = [];
 let searchTimer = null;
 
+function normalizeText(value) {
+    return (value ?? "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/đ/g, "d")
+        .replace(/Đ/g, "D")
+        .toLowerCase();
+}
+
 function getRowNumber(idValue, fallbackIndex) {
     const match = currentStudents.find(s => s.id === idValue);
     return match && match.__rowNumber ? match.__rowNumber : fallbackIndex + 1;
@@ -321,9 +330,9 @@ function searchStudent() {
             return;
         }
 
-        const normalized = name.toLowerCase();
+        const normalized = normalizeText(name);
         const filtered = currentStudents.filter(s =>
-            (s.name ?? "").toLowerCase().includes(normalized)
+            normalizeText(s.name).includes(normalized)
         );
         displaySearchResults(filtered);
     }, 200);

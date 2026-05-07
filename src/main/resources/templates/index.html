@@ -3,432 +3,550 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Lý Sinh Viên Pro</title>
+    <title>Quản Lý Sinh Viên</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #4f46e5;
-            --primary-hover: #4338ca;
-            --secondary: #ec4899;
-            --background: #f3f4f6;
-            --surface: rgba(255, 255, 255, 0.85);
-            --surface-hover: rgba(255, 255, 255, 0.95);
-            --text-main: #1f2937;
-            --text-muted: #6b7280;
-            --border-color: rgba(229, 231, 235, 0.5);
-            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+            --bg: #fff7ef;
+            --bg-soft: #f5f1ea;
+            --surface: #ffffff;
+            --surface-soft: #fffaf4;
+            --ink: #2b2520;
+            --muted: #7b736b;
+            --line: #efe2d4;
+            --accent: #ff8c4b;
+            --accent-strong: #ff6a2c;
+            --accent-cool: #2aa198;
+            --shadow: 0 18px 50px rgba(36, 26, 18, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
         }
 
         body {
-            font-family: 'Outfit', sans-serif;
-            background: #f8fafc;
-            background-image: 
-                radial-gradient(at 40% 20%, hsla(250,100%,74%,1) 0px, transparent 50%),
-                radial-gradient(at 80% 0%, hsla(189,100%,56%,1) 0px, transparent 50%),
-                radial-gradient(at 0% 50%, hsla(333,100%,70%,1) 0px, transparent 50%),
-                radial-gradient(at 80% 50%, hsla(28,100%,74%,1) 0px, transparent 50%),
-                radial-gradient(at 0% 100%, hsla(22,100%,77%,1) 0px, transparent 50%),
-                radial-gradient(at 80% 100%, hsla(242,100%,70%,1) 0px, transparent 50%),
-                radial-gradient(at 0% 0%, hsla(343,100%,76%,1) 0px, transparent 50%);
-            min-height: 100vh;
-            color: var(--text-main);
-            padding: 40px 0;
-            background-attachment: fixed;
-        }
-
-        .glass-panel {
-            background: var(--surface);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            border-radius: 24px;
-            box-shadow: var(--glass-shadow);
-            padding: 30px;
-            margin-bottom: 30px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .header-section {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        .header-title {
-            font-size: 2.2rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
             margin: 0;
-            letter-spacing: -0.5px;
+            font-family: "Manrope", sans-serif;
+            background: linear-gradient(135deg, var(--bg) 0%, #f1f7f4 100%);
+            color: var(--ink);
+            min-height: 100vh;
         }
 
-        .search-box {
+        .page {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 32px 20px 60px;
             position: relative;
         }
 
-        .search-input {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 16px 20px 16px 50px;
-            font-size: 1rem;
-            color: var(--text-main);
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
-            background: #fff;
-        }
-
-        .search-icon {
+        .page::before,
+        .page::after {
+            content: "";
             position: absolute;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-            font-size: 1.1rem;
-            transition: color 0.3s ease;
+            border-radius: 999px;
+            filter: blur(0px);
+            z-index: -1;
         }
 
-        .search-input:focus + .search-icon {
-            color: var(--primary);
+        .page::before {
+            width: 260px;
+            height: 260px;
+            background: rgba(255, 140, 75, 0.15);
+            top: -40px;
+            right: 8%;
         }
 
-        .table-container {
-            border-radius: 16px;
-            overflow: hidden;
-            background: rgba(255, 255, 255, 0.5);
-            border: 1px solid var(--border-color);
+        .page::after {
+            width: 220px;
+            height: 220px;
+            background: rgba(42, 161, 152, 0.15);
+            bottom: -40px;
+            left: 6%;
         }
 
-        .table {
-            margin-bottom: 0;
-            --bs-table-bg: transparent;
-        }
-
-        .table thead th {
-            background: rgba(249, 250, 251, 0.7);
-            border-bottom: 1px solid var(--border-color);
-            color: var(--text-muted);
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            letter-spacing: 1px;
-            padding: 16px 20px;
-        }
-
-        .table tbody tr {
-            border-bottom: 1px solid var(--border-color);
-            transition: all 0.2s ease;
-        }
-
-        .table tbody tr:last-child {
-            border-bottom: none;
-        }
-
-        .table tbody tr:hover {
-            background-color: var(--surface-hover);
-            transform: scale(1.005);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-            border-radius: 12px;
-        }
-
-        .table td {
-            padding: 16px 20px;
-            vertical-align: middle;
-            color: var(--text-main);
-            border-bottom: none;
-        }
-
-        .student-name-cell {
+        .topbar {
             display: flex;
             align-items: center;
-            gap: 15px;
+            justify-content: space-between;
+            margin-bottom: 28px;
         }
 
-        .avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #c7d2fe 0%, #fbcfe8 100%);
+        .brand {
             display: flex;
             align-items: center;
-            justify-content: center;
-            color: var(--primary);
+            gap: 14px;
+        }
+
+        .brand-mark {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            display: grid;
+            place-items: center;
+            font-family: "Space Grotesk", sans-serif;
+            font-weight: 700;
+            color: var(--accent);
+            box-shadow: var(--shadow);
+        }
+
+        .brand-title {
+            font-family: "Space Grotesk", sans-serif;
             font-weight: 700;
             font-size: 1.1rem;
         }
 
-        .badge-id {
-            background: rgba(79, 70, 229, 0.1);
-            color: var(--primary);
-            padding: 6px 12px;
-            border-radius: 8px;
+        .brand-sub {
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .chip {
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            font-size: 0.85rem;
+            color: var(--muted);
+            box-shadow: var(--shadow);
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+            gap: 24px;
+        }
+
+        .card {
+            background: var(--surface);
+            border-radius: 26px;
+            padding: 24px;
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow);
+        }
+
+        .card-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .eyebrow {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--muted);
+        }
+
+        h1 {
+            margin: 6px 0 0;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 2rem;
+        }
+
+        .count-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: var(--surface-soft);
+            border: 1px solid var(--line);
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .count-label {
+            font-size: 0.85rem;
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        .filters {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .field label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--muted);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .input-shell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            border-radius: 16px;
+            border: 1px solid var(--line);
+            background: var(--surface-soft);
+            transition: all 0.2s ease;
+        }
+
+        .input-shell i {
+            color: var(--muted);
+        }
+
+        .input-shell input {
+            border: none;
+            outline: none;
+            background: transparent;
+            width: 100%;
+            font-size: 0.95rem;
+            color: var(--ink);
+        }
+
+        .input-shell:focus-within {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(255, 140, 75, 0.15);
+            background: #fff;
+        }
+
+        .table-wrap {
+            border: 1px solid var(--line);
+            border-radius: 20px;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table thead th {
+            text-align: left;
+            padding: 14px 16px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--muted);
+            background: #fff3e9;
+        }
+
+        .data-table tbody tr {
+            border-bottom: 1px solid var(--line);
+            transition: background 0.2s ease;
+        }
+
+        .data-table tbody tr:hover {
+            background: #fff7f1;
+        }
+
+        .data-table td {
+            padding: 14px 16px;
+            vertical-align: middle;
+        }
+
+        .id-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 38px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: #fff0e6;
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        .name-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            background: #fff1e8;
+            color: var(--accent);
+            display: grid;
+            place-items: center;
+            font-weight: 700;
+        }
+
+        .age-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: #eaf6f4;
+            color: var(--accent-cool);
             font-weight: 600;
             font-size: 0.85rem;
         }
 
-        .btn-custom {
-            padding: 12px 24px;
+        .muted {
+            color: var(--muted);
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .icon-btn {
+            width: 34px;
+            height: 34px;
             border-radius: 12px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            border: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-primary-custom {
-            background: linear-gradient(135deg, var(--primary), #818cf8);
-            color: white;
-            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
-        }
-
-        .btn-primary-custom:hover {
-            background: linear-gradient(135deg, var(--primary-hover), #6366f1);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
-            color: white;
-        }
-
-        .btn-outline-custom {
-            background: rgba(255,255,255,0.8);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-        }
-
-        .btn-outline-custom:hover {
-            background: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-
-        .btn-action {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
+            border: 1px solid transparent;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 0;
-            margin: 0 4px;
-            transition: all 0.2s ease;
-            border: none;
-        }
-
-        .btn-edit {
-            background: rgba(245, 158, 11, 0.1);
-            color: #f59e0b;
-        }
-
-        .btn-edit:hover {
-            background: #f59e0b;
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        .btn-delete {
-            background: rgba(239, 68, 68, 0.1);
-            color: #ef4444;
-        }
-
-        .btn-delete:hover {
-            background: #ef4444;
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        .form-control-custom {
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 14px 16px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .form-control-custom:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
-            outline: none;
             background: #fff;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
-        .form-label {
-            font-weight: 500;
-            color: var(--text-muted);
+        .icon-btn.edit {
+            color: #d97706;
+            background: #fff5e1;
+            border-color: #ffe4bf;
+        }
+
+        .icon-btn.delete {
+            color: #dc2626;
+            background: #fff1f2;
+            border-color: #ffd4d6;
+        }
+
+        .icon-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-card h2 {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 1.5rem;
             margin-bottom: 8px;
+        }
+
+        .form-sub {
+            color: var(--muted);
             font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 16px;
+            padding: 12px 16px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn.primary {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 10px 20px rgba(255, 140, 75, 0.3);
+        }
+
+        .btn.primary:hover {
+            background: var(--accent-strong);
+            transform: translateY(-1px);
+        }
+
+        .btn.ghost {
+            background: #fff;
+            border: 1px solid var(--line);
+            color: var(--muted);
         }
 
         .toast-container {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            bottom: 24px;
+            right: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
             z-index: 9999;
         }
 
-        .custom-toast {
-            background: white;
-            border-radius: 12px;
-            padding: 16px 24px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        .toast {
+            background: #fff;
+            border-radius: 16px;
+            padding: 14px 18px;
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow);
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-top: 10px;
+            gap: 10px;
             transform: translateX(120%);
-            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            border-left: 4px solid var(--primary);
+            transition: transform 0.3s ease;
         }
 
-        .custom-toast.show {
+        .toast.show {
             transform: translateX(0);
         }
 
-        .toast-icon {
-            font-size: 1.2rem;
-            color: var(--primary);
+        .toast.success i {
+            color: #16a34a;
         }
 
-        .toast-success {
-            border-left-color: #10b981;
-        }
-        .toast-success .toast-icon {
-            color: #10b981;
-        }
-        .toast-error {
-            border-left-color: #ef4444;
-        }
-        .toast-error .toast-icon {
-            color: #ef4444;
+        .toast.error i {
+            color: #dc2626;
         }
 
         .empty-state {
-            padding: 40px 20px;
+            padding: 28px 10px;
             text-align: center;
+            color: var(--muted);
         }
 
-        .empty-state-icon {
-            font-size: 3rem;
-            color: var(--text-muted);
-            opacity: 0.5;
-            margin-bottom: 15px;
-        }
-
-        /* Micro animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes rise {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .fade-in {
-            animation: fadeIn 0.4s ease forwards;
+            animation: rise 0.4s ease both;
+            animation-delay: var(--delay, 0s);
+        }
+
+        @media (max-width: 992px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            .filters {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
         }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <div class="row">
-        <!-- Main Content (Table) -->
-        <div class="col-lg-8">
-            <div class="glass-panel fade-in" style="animation-delay: 0.1s">
-                <div class="header-section">
-                    <h2 class="header-title">Sinh Viên</h2>
-                    <div class="badge bg-primary rounded-pill px-3 py-2" style="background: rgba(79, 70, 229, 0.1) !important; color: var(--primary) !important; font-weight: 600;">
-                        <i class="fas fa-users me-1"></i> <span id="studentCount">0</span>
-                    </div>
-                </div>
-
-                <div class="row g-3 mb-4">
-                    <div class="col-md-7">
-                        <div class="search-box">
-                            <input type="text" id="searchName" class="search-input" placeholder="Tìm kiếm sinh viên theo tên..." onkeyup="searchStudent()">
-                            <i class="fas fa-search search-icon"></i>
-                        </div>
-                    </div>
-                    <div class="col-md-5">
-                        <div class="search-box">
-                            <input type="text" id="searchId" class="search-input" placeholder="Tìm theo STT..." onkeyup="searchById()">
-                            <i class="fas fa-hashtag search-icon"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="table-container">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>STT</th>
-                                <th>Học viên</th>
-                                <th>Tuổi</th>
-                                <th>Liên hệ</th>
-                                <th class="text-center">Thao tác</th>
-                            </tr>
-                        </thead>
-                        <tbody id="studentTable">
-                            <!-- Data will be loaded here -->
-                        </tbody>
-                    </table>
-                </div>
+<div class="page">
+    <header class="topbar fade-in" style="--delay: 0s;">
+        <div class="brand">
+            <div class="brand-mark">SV</div>
+            <div>
+                <div class="brand-title">School Manager</div>
+                <div class="brand-sub">Quản lý sinh viên</div>
             </div>
         </div>
+        <div class="chip">Bảng điều khiển</div>
+    </header>
 
-        <!-- Sidebar Form -->
-        <div class="col-lg-4">
-            <div class="glass-panel fade-in" style="animation-delay: 0.2s; position: sticky; top: 40px;">
-                <h4 id="formTitle" class="mb-4" style="font-weight: 700; color: var(--text-main);">
-                    Thêm Sinh Viên
-                </h4>
-                <input type="hidden" id="studentId">
-                
-                <div class="mb-3">
-                    <label class="form-label">Họ và tên</label>
-                    <div class="input-group">
-                        <span class="input-group-text bg-transparent border-end-0 text-muted" style="border-radius: 12px 0 0 12px; border-color: var(--border-color);"><i class="fas fa-user"></i></span>
-                        <input id="name" class="form-control form-control-custom border-start-0" style="border-radius: 0 12px 12px 0;" placeholder="Nhập tên sinh viên">
-                    </div>
+    <main class="layout">
+        <section class="card main-card fade-in" style="--delay: 0.1s;">
+            <div class="card-head">
+                <div>
+                    <span class="eyebrow">Danh sách</span>
+                    <h1>Quản lý sinh viên</h1>
                 </div>
-                
-                <div class="mb-3">
-                    <label class="form-label">Tuổi</label>
-                    <div class="input-group">
-                        <span class="input-group-text bg-transparent border-end-0 text-muted" style="border-radius: 12px 0 0 12px; border-color: var(--border-color);"><i class="fas fa-calendar-alt"></i></span>
-                        <input id="age" type="number" class="form-control form-control-custom border-start-0" style="border-radius: 0 12px 12px 0;" placeholder="Nhập tuổi">
-                    </div>
-                </div>
-                
-                <div class="mb-4">
-                    <label class="form-label">Email</label>
-                    <div class="input-group">
-                        <span class="input-group-text bg-transparent border-end-0 text-muted" style="border-radius: 12px 0 0 12px; border-color: var(--border-color);"><i class="fas fa-envelope"></i></span>
-                        <input id="email" class="form-control form-control-custom border-start-0" style="border-radius: 0 12px 12px 0;" placeholder="Nhập email">
-                    </div>
-                </div>
-                
-                <div class="d-grid gap-2">
-                    <button id="submitBtn" class="btn-custom btn-primary-custom justify-content-center" onclick="saveStudent()">
-                        <i class="fas fa-plus"></i> Thêm Sinh Viên Mới
-                    </button>
-                    <button id="cancelBtn" class="btn-custom btn-outline-custom justify-content-center" onclick="cancelEdit()" style="display:none;">
-                        Hủy Thay Đổi
-                    </button>
+                <div class="count-pill">
+                    <span id="studentCount">0</span>
+                    <span class="count-label">Học viên</span>
                 </div>
             </div>
-        </div>
-    </div>
+
+            <div class="filters">
+                <div class="field">
+                    <label for="searchName">Tìm theo tên</label>
+                    <div class="input-shell">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchName" placeholder="Nhập tên sinh viên..." onkeyup="searchStudent()">
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="searchId">ID SV</label>
+                    <div class="input-shell">
+                        <i class="fas fa-hashtag"></i>
+                        <input type="text" id="searchId" placeholder="Nhập ID SV (1, 2, 3...)" onkeyup="searchById()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID SV</th>
+                            <th>Học viên</th>
+                            <th>Tuổi</th>
+                            <th>Email</th>
+                            <th class="center">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentTable"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <aside class="card form-card fade-in" style="--delay: 0.2s;">
+            <h2 id="formTitle">Thêm sinh viên</h2>
+            <p class="form-sub">Điền thông tin cơ bản để thêm mới nhanh.</p>
+            <input type="hidden" id="studentId">
+
+            <div class="field">
+                <label for="name">Họ và tên</label>
+                <div class="input-shell">
+                    <i class="fas fa-user"></i>
+                    <input id="name" type="text" placeholder="Nhập tên sinh viên">
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="age">Tuổi</label>
+                <div class="input-shell">
+                    <i class="fas fa-calendar-days"></i>
+                    <input id="age" type="number" placeholder="Nhập tuổi">
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="email">Email</label>
+                <div class="input-shell">
+                    <i class="fas fa-envelope"></i>
+                    <input id="email" type="email" placeholder="ten@university.edu.vn">
+                </div>
+            </div>
+
+            <div class="actions">
+                <button id="submitBtn" class="btn primary" onclick="saveStudent()">
+                    <i class="fas fa-plus"></i> Thêm sinh viên
+                </button>
+                <button id="cancelBtn" class="btn ghost" onclick="cancelEdit()" style="display:none;">
+                    Hủy thay đổi
+                </button>
+            </div>
+        </aside>
+    </main>
 </div>
 
 <div class="toast-container" id="toastContainer"></div>
@@ -449,7 +567,7 @@ function normalizeText(value) {
 
 function getInitials(name) {
     if (!name) return "U";
-    return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+    return name.split(" ").map(part => part[0]).join("").substring(0, 2).toUpperCase();
 }
 
 function getRowNumber(idValue, fallbackIndex) {
@@ -458,7 +576,7 @@ function getRowNumber(idValue, fallbackIndex) {
 }
 
 function updateStudentCount() {
-    document.getElementById('studentCount').innerText = currentStudents.length + " Học viên";
+    document.getElementById("studentCount").textContent = currentStudents.length;
 }
 
 function loadStudents() {
@@ -480,11 +598,7 @@ function renderTable(data) {
         html = `
             <tr>
                 <td colspan="5">
-                    <div class="empty-state">
-                        <i class="fas fa-inbox empty-state-icon"></i>
-                        <h5 class="text-muted">Không tìm thấy dữ liệu</h5>
-                        <p class="text-muted small">Hãy thêm sinh viên mới hoặc thay đổi từ khóa tìm kiếm</p>
-                    </div>
+                    <div class="empty-state">Không tìm thấy dữ liệu</div>
                 </td>
             </tr>
         `;
@@ -496,34 +610,24 @@ function renderTable(data) {
             const ageValue = s.age ?? "";
             const rowNumber = getRowNumber(idValue, index);
             const initials = getInitials(s.name);
-            
+
             html += `
-            <tr class="fade-in" style="animation-delay: ${index * 0.05}s">
-                <td><span class="badge-id">#${rowNumber}</span></td>
+            <tr>
+                <td><span class="id-pill" title="${idValue}">${rowNumber}</span></td>
                 <td>
-                    <div class="student-name-cell">
+                    <div class="name-cell">
                         <div class="avatar">${initials}</div>
-                        <div>
-                            <div style="font-weight: 600;">${s.name}</div>
-                            <div style="font-size: 0.8rem; color: var(--text-muted);"><i class="fas fa-fingerprint me-1"></i>ID: ${idValue.substring(0, 8)}...</div>
-                        </div>
+                        <span>${s.name}</span>
                     </div>
                 </td>
-                <td><span style="font-weight: 500;">${s.age || '--'}</span> <span style="font-size: 0.8rem; color: var(--text-muted);">tuổi</span></td>
-                <td>
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <div style="width: 32px; height: 32px; border-radius: 50%; background: #f3f4f6; display: flex; align-items: center; justify-content: center; color: var(--text-muted);">
-                            <i class="fas fa-envelope"></i>
-                        </div>
-                        <span style="color: var(--text-muted); font-size: 0.95rem;">${s.email}</span>
-                    </div>
-                </td>
-                <td class="text-center">
-                    <button class="btn-action btn-edit" title="Sửa"
+                <td><span class="age-pill">${s.age || "--"}</span></td>
+                <td class="muted">${s.email || "--"}</td>
+                <td class="center">
+                    <button class="icon-btn edit" title="Sửa"
                         onclick="editStudent('${idValue}', '${safeName}', '${ageValue}', '${safeEmail}')">
                         <i class="fas fa-pen"></i>
                     </button>
-                    <button class="btn-action btn-delete" title="Xóa"
+                    <button class="icon-btn delete" title="Xóa"
                         onclick="deleteStudent('${idValue}')">
                         <i class="fas fa-trash"></i>
                     </button>
@@ -539,9 +643,9 @@ function saveStudent() {
     const name = document.getElementById("name").value.trim();
     const email = document.getElementById("email").value.trim();
     const ageValue = document.getElementById("age").value.trim();
-    
+
     if (!name || !email) {
-        showToast('Vui lòng nhập đầy đủ tên và email!', 'error');
+        showToast("Vui lòng nhập đầy đủ tên và email!", "error");
         return;
     }
 
@@ -552,19 +656,18 @@ function saveStudent() {
     };
 
     const url = id ? `${API}/update/${encodeURIComponent(id)}` : API;
-    const method = "POST";
 
     fetch(url, {
-        method: method,
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(student)
     }).then(res => {
         if (!res.ok) throw new Error("API error");
         resetForm();
         loadStudents();
-        showToast(id ? 'Cập nhật thành công!' : 'Thêm mới thành công!', 'success');
-    }).catch(err => {
-        showToast('Có lỗi xảy ra!', 'error');
+        showToast(id ? "Cập nhật thành công!" : "Thêm mới thành công!", "success");
+    }).catch(() => {
+        showToast("Có lỗi xảy ra!", "error");
     });
 }
 
@@ -573,12 +676,15 @@ function editStudent(id, name, age, email) {
     document.getElementById("name").value = name;
     document.getElementById("age").value = age ?? "";
     document.getElementById("email").value = email;
-    
-    document.getElementById("formTitle").innerText = 'Chỉnh Sửa Thông Tin';
-    document.getElementById("submitBtn").innerHTML = '<i class="fas fa-save"></i> Lưu Thay Đổi';
-    document.getElementById("cancelBtn").style.display = "flex";
-    
-    document.querySelector('.col-lg-4').scrollIntoView({ behavior: 'smooth' });
+
+    document.getElementById("formTitle").innerText = "Chỉnh sửa sinh viên";
+    document.getElementById("submitBtn").innerHTML = '<i class="fas fa-save"></i> Lưu thay đổi';
+    document.getElementById("cancelBtn").style.display = "inline-flex";
+
+    const formCard = document.querySelector(".form-card");
+    if (formCard) {
+        formCard.scrollIntoView({ behavior: "smooth" });
+    }
 }
 
 function cancelEdit() {
@@ -590,48 +696,42 @@ function resetForm() {
     document.getElementById("name").value = "";
     document.getElementById("age").value = "";
     document.getElementById("email").value = "";
-    document.getElementById("formTitle").innerText = 'Thêm Sinh Viên';
-    document.getElementById("submitBtn").innerHTML = '<i class="fas fa-plus"></i> Thêm Sinh Viên Mới';
+    document.getElementById("formTitle").innerText = "Thêm sinh viên";
+    document.getElementById("submitBtn").innerHTML = '<i class="fas fa-plus"></i> Thêm sinh viên';
     document.getElementById("cancelBtn").style.display = "none";
 }
 
 function deleteStudent(id) {
-    if (confirm('Bạn có chắc chắn muốn xóa học viên này? Hành động này không thể hoàn tác.')) {
+    if (confirm("Bạn có chắc chắn muốn xóa sinh viên này?")) {
         fetch(`${API}/${encodeURIComponent(id)}`, { method: "DELETE" })
             .then(res => {
                 if (!res.ok) throw new Error("API error");
                 loadStudents();
-                showToast('Đã xóa sinh viên', 'success');
-            }).catch(err => {
-                showToast('Không thể xóa sinh viên', 'error');
+                showToast("Đã xóa sinh viên", "success");
+            }).catch(() => {
+                showToast("Không thể xóa sinh viên", "error");
             });
     }
 }
 
-function showToast(message, type = 'success') {
-    const container = document.getElementById('toastContainer');
-    const toast = document.createElement('div');
-    toast.className = `custom-toast toast-${type}`;
-    
-    const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
-    
+function showToast(message, type = "success") {
+    const container = document.getElementById("toastContainer");
+    const toast = document.createElement("div");
+    toast.className = `toast ${type}`;
+
+    const icon = type === "success" ? "fa-check-circle" : "fa-exclamation-circle";
     toast.innerHTML = `
-        <i class="fas ${icon} toast-icon"></i>
+        <i class="fas ${icon}"></i>
         <div>
-            <div style="font-weight: 600; font-size: 0.95rem; color: var(--text-main);">${type === 'success' ? 'Thành công' : 'Lỗi'}</div>
-            <div style="font-size: 0.85rem; color: var(--text-muted);">${message}</div>
+            <div style="font-weight: 600;">${type === "success" ? "Thành công" : "Lỗi"}</div>
+            <div class="muted" style="font-size: 0.85rem;">${message}</div>
         </div>
     `;
-    
+
     container.appendChild(toast);
-    
-    // Trigger reflow to start animation
+    setTimeout(() => toast.classList.add("show"), 10);
     setTimeout(() => {
-        toast.classList.add('show');
-    }, 10);
-    
-    setTimeout(() => {
-        toast.classList.remove('show');
+        toast.classList.remove("show");
         setTimeout(() => toast.remove(), 300);
     }, 3000);
 }
@@ -640,9 +740,11 @@ function searchStudent() {
     const nameInput = document.getElementById("searchName");
     const idInput = document.getElementById("searchId");
     const name = nameInput.value.trim();
-    idInput.value = ""; 
+    idInput.value = "";
 
-    if (searchTimer) clearTimeout(searchTimer);
+    if (searchTimer) {
+        clearTimeout(searchTimer);
+    }
 
     searchTimer = setTimeout(() => {
         if (!name) {
@@ -660,8 +762,8 @@ function searchStudent() {
 
 function searchById() {
     const id = document.getElementById("searchId").value.trim();
-    document.getElementById("searchName").value = ""; 
-    
+    document.getElementById("searchName").value = "";
+
     if (!id) {
         renderTable(currentStudents);
         return;
@@ -681,9 +783,7 @@ function searchById() {
     }
 }
 
-// Initial load
 loadStudents();
 </script>
-
 </body>
 </html>

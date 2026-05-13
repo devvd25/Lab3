@@ -5,13 +5,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import com.example.schoolmanager.service.StudentService;
+import com.example.schoolmanager.service.StudentSyncService;
 
 @Controller
 public class StudentViewController {
 
     @Autowired
-    private StudentService service;
+    private StudentSyncService syncService;
 
     @GetMapping("/")
     public String index() {
@@ -20,7 +20,7 @@ public class StudentViewController {
 
     @GetMapping("/students")
     public String listStudents(Model model) {
-        model.addAttribute("students", service.getAll());
+        model.addAttribute("students", syncService.getAllMerged());
         return "student"; // student.html
     }
 }

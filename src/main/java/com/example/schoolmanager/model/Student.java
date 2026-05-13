@@ -1,9 +1,6 @@
 package com.example.schoolmanager.model;
 
-import java.util.UUID;
-
-import org.hibernate.annotations.UuidGenerator;
-
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -13,21 +10,25 @@ import jakarta.persistence.Table;
 @Table(name = "students")
 public class Student {
     @Id
-    @GeneratedValue
-    @UuidGenerator
-    private UUID id;
+    private String id;
     private String name;
     private Integer age;
     private String email;
+    private String gender;
 
     public Student() {}
-    public Student(UUID id, String name, Integer age, String email) {
+    public Student(String id, String name, Integer age, String email) {
+        this(id, name, age, email, null);
+    }
+
+    public Student(String id, String name, Integer age, String email, String gender) {
         this.id = id;
         this.name = name;
         this.age = age;
         this.email = email;
+        this.gender = gender;
     }
-    public UUID getId() {
+    public String getId() {
         return id;
     }
     public String getName() {
@@ -39,7 +40,10 @@ public class Student {
     public String getEmail() {
         return email;
     }
-    public void setId(UUID id) {
+    public String getGender() {
+        return gender;
+    }
+    public void setId(String id) {
         this.id = id;
     }
     public void setName(String name) {
@@ -50,6 +54,9 @@ public class Student {
     }
     public void setEmail(String email) {
         this.email = email;
+    }
+    public void setGender(String gender) {
+        this.gender = gender;
     }
     
 }

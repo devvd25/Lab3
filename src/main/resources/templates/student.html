@@ -22,13 +22,17 @@
     <tr>
         <th>ID</th>
         <th>Họ tên</th>
+        <th>Tuổi</th>
         <th>Email</th>
+        <th>Giới tính</th>
     </tr>
 
     <tr th:each="sv : ${students}">
         <td th:text="${sv.id}"></td>
         <td th:text="${sv.name}"></td>
+        <td th:text="${sv.age}"></td>
         <td th:text="${sv.email}"></td>
+        <td th:text="${sv.gender}"></td>
     </tr>
 </table>
 

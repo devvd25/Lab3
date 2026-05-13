@@ -35,7 +35,7 @@
         }
 
         .page {
-            max-width: 1200px;
+            max-width: 1600px;
             margin: 0 auto;
             padding: 32px 20px 60px;
             position: relative;
@@ -198,6 +198,15 @@
         }
 
         .input-shell input {
+            border: none;
+            outline: none;
+            background: transparent;
+            width: 100%;
+            font-size: 0.95rem;
+            color: var(--ink);
+        }
+
+        .input-shell select {
             border: none;
             outline: none;
             background: transparent;
@@ -489,6 +498,7 @@
                             <th>Học viên</th>
                             <th>Tuổi</th>
                             <th>Email</th>
+                            <th>Giới tính</th>
                             <th class="center">Thao tác</th>
                         </tr>
                     </thead>
@@ -523,6 +533,19 @@
                 <div class="input-shell">
                     <i class="fas fa-envelope"></i>
                     <input id="email" type="email" placeholder="ten@university.edu.vn">
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="gender">Giới tính</label>
+                <div class="input-shell">
+                    <i class="fas fa-venus-mars"></i>
+                    <select id="gender">
+                        <option value="">Chọn giới tính</option>
+                        <option value="Nam">Nam</option>
+                        <option value="Nu">Nu</option>
+                        <option value="Khac">Khac</option>
+                    </select>
                 </div>
             </div>
 
@@ -599,7 +622,7 @@ function renderTable(data) {
     if (data.length === 0) {
         html = `
             <tr>
-                <td colspan="5">
+                <td colspan="6">
                     <div class="empty-state">Không tìm thấy dữ liệu</div>
                 </td>
             </tr>
@@ -609,12 +632,13 @@ function renderTable(data) {
             const idValue = s.id ?? "";
             const safeName = (s.name ?? "").replace(/\\/g, "\\\\").replace(/'/g, "\\'");
             const safeEmail = (s.email ?? "").replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+            const safeGender = (s.gender ?? "").replace(/\\/g, "\\\\").replace(/'/g, "\\'");
             const ageValue = s.age ?? "";
             const rowNumber = getRowNumber(idValue, index);
 
             html += `
             <tr>
-                <td><span class="id-pill" title="${idValue}">${rowNumber}</span></td>
+                <td><span class="id-pill" title="${idValue}">${idValue}</span></td>
                 <td>
                     <div class="name-cell">
                         <span>${s.name}</span>
@@ -622,9 +646,10 @@ function renderTable(data) {
                 </td>
                 <td><span class="age-pill">${s.age || "--"}</span></td>
                 <td class="muted">${s.email || "--"}</td>
+                <td class="muted">${s.gender || "--"}</td>
                 <td class="center">
                     <button class="icon-btn edit" title="Sửa"
-                        onclick="editStudent('${idValue}', '${safeName}', '${ageValue}', '${safeEmail}')">
+                        onclick="editStudent('${idValue}', '${safeName}', '${ageValue}', '${safeEmail}', '${safeGender}')">
                         <i class="fas fa-pen"></i>
                     </button>
                     <button class="icon-btn delete" title="Xóa"
@@ -643,6 +668,7 @@ function saveStudent() {
     const name = document.getElementById("name").value.trim();
     const email = document.getElementById("email").value.trim();
     const ageValue = document.getElementById("age").value.trim();
+    const genderValue = document.getElementById("gender").value.trim();
 
     if (!name || !email) {
         showToast("Vui lòng nhập đầy đủ tên và email!", "error");
@@ -652,7 +678,8 @@ function saveStudent() {
     const student = {
         name: name,
         age: ageValue ? parseInt(ageValue, 10) : null,
-        email: email
+        email: email,
+        gender: genderValue || null
     };
 
     const url = id ? `${API}/update/${encodeURIComponent(id)}` : API;
@@ -671,11 +698,12 @@ function saveStudent() {
     });
 }
 
-function editStudent(id, name, age, email) {
+function editStudent(id, name, age, email, gender) {
     document.getElementById("studentId").value = id;
     document.getElementById("name").value = name;
     document.getElementById("age").value = age ?? "";
     document.getElementById("email").value = email;
+    document.getElementById("gender").value = gender ?? "";
 
     document.getElementById("formTitle").innerText = "Chỉnh sửa sinh viên";
     document.getElementById("submitBtn").innerHTML = '<i class="fas fa-save"></i> Lưu thay đổi';
@@ -696,6 +724,7 @@ function resetForm() {
     document.getElementById("name").value = "";
     document.getElementById("age").value = "";
     document.getElementById("email").value = "";
+    document.getElementById("gender").value = "";
     document.getElementById("formTitle").innerText = "Thêm sinh viên";
     document.getElementById("submitBtn").innerHTML = '<i class="fas fa-plus"></i> Thêm sinh viên';
     document.getElementById("cancelBtn").style.display = "none";

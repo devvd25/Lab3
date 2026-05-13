@@ -7,13 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.schoolmanager.model.Student;
-import com.example.schoolmanager.respository.local.StudentRepository;
+import com.example.schoolmanager.respository.online.OnlineStudentRepository;
 
 @Service
-public class StudentService {
+public class OnlineStudentService {
 
     @Autowired
-    private StudentRepository repository;
+    private OnlineStudentRepository repository;
 
     public Student addStudent(Student student) {
         return repository.save(student);
@@ -23,15 +23,15 @@ public class StudentService {
         repository.deleteById(id);
     }
 
-    public List<Student> findByName(String name){
+    public List<Student> findByName(String name) {
         return repository.findByNameContainingIgnoreCase(name);
     }
 
-    public List<Student> getAll(){
+    public List<Student> getAll() {
         return repository.findAll();
     }
 
-    public Student getStudentById(UUID id){
+    public Student getStudentById(UUID id) {
         return repository.findById(id).orElse(null);
     }
 }
